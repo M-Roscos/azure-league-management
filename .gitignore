@@ -1,0 +1,53 @@
+# ==========================================
+# BEZPIECZEŃSTWO I SEKRETY
+# ==========================================
+local.settings.json
+appsettings.Development.json
+appsettings.json
+*.env
+*.env.*
+secrets.json
+
+# ==========================================
+# BACKEND: .NET / C# / Azure Functions
+# ==========================================
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.log
+
+# Narzędzia i pakiety NuGet
+packages/
+*.nupkg
+.nuget/
+
+# ==========================================
+# FRONTEND: React / Node.js
+# ==========================================
+node_modules/
+npm-debug.log
+yarn-error.log
+.pnp.*
+
+# Foldery budowania frontendu
+build/
+dist/
+.next/
+out/
+
+# ==========================================
+# SYSTEMOWE
+# ==========================================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
