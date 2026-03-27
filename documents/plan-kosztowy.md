@@ -32,3 +32,5 @@ Zgodnie z najlepszymi praktykami bezpieczeństwa, w kodzie aplikacji nie umieszc
 
 ### Monitorowanie i Identyfikacja Zagrożeń (Application Insights)
 Zintegrowano usługę telemetryczną w celu monitorowania nie tylko wydajności, ale również bezpieczeństwa. System rejestruje wszystkie próby nieautoryzowanego dostępu, błędy aplikacji (które mogłyby ujawnić wrażliwe dane o strukturze bazy) oraz podejrzane wzorce ruchu webowego.
+
+Podsumowując, zaproponowany stos technologiczny gwarantuje utrzymanie kosztów na poziomie zaledwie ~60 USD rocznie, spełniając rygorystyczne wymagania budżetowe, a jednocześnie wdraża wielowarstwową ochronę zgodną z wytycznymi OWASP Top 10 i standardami chmurowymi Microsoft Azure.
