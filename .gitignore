@@ -1,53 +1,63 @@
-# ==========================================
-# BEZPIECZEŃSTWO I SEKRETY
-# ==========================================
-local.settings.json
+# =========================================
+# SYSTEM LIGA - SECURE .GITIGNORE
+# Stos: .NET WebApp / Azure
+# =========================================
+
+# 1. ZABEZPIECZENIA I SEKRETY (SECURITY FIRST)
+# Wykluczenie lokalnych plików konfiguracyjnych mogących zawierać hasła lub klucze
+.env
+.env.*
+*.secret.json
 appsettings.Development.json
-appsettings.json
-*.env
-*.env.*
+appsettings.Local.json
 secrets.json
 
-# ==========================================
-# BACKEND: .NET / C# / Azure Functions
-# ==========================================
+# Wykluczenie profili publikacji Azure (zapobiega wyciekowi poświadczeń deploymentu)
+Properties/PublishProfiles/*.pubxml.user
+*.publishsettings
+*.pubxml
+
+# Wykluczenie lokalnych kluczy kryptograficznych i certyfikatów
+*.pfx
+*.pem
+*.crt
+*.key
+
+# 2. PLIKI TYMCZASOWE KOMPILACJI (BUILD)
+# Wykluczenie plików binarnych i obiektowych
 [Bb]in/
 [Oo]bj/
 [Oo]ut/
+
+# 3. PLIKI ŚRODOWISKA PROGRAMISTYCZNEGO (IDE)
+# Visual Studio / Visual Studio Code / Rider
 .vs/
+.vscode/
+.idea/
 *.user
-*.suo
 *.userosscache
+*.suo
 *.sln.docstates
+
+# 4. LOKALNE BAZY DANYCH I LOGI
+# Wykluczenie lokalnych plików bazodanowych używanych do testów
+*.db
+*.sqlite
+*.sqlite3
+*.mdf
+*.ldf
+*.ndf
+
+# Wykluczenie plików z logami aplikacji
 *.log
+[Ll]ogs/
 
-# Narzędzia i pakiety NuGet
-packages/
-*.nupkg
-.nuget/
-
-# ==========================================
-# FRONTEND: React / Node.js
-# ==========================================
-node_modules/
-npm-debug.log
-yarn-error.log
-.pnp.*
-
-# Foldery budowania frontendu
-build/
-dist/
-.next/
-out/
-
-# ==========================================
-# SYSTEMOWE
-# ==========================================
+# 5. SYSTEMY OPERACYJNE
+# Pliki systemowe Windows i macOS
 .DS_Store
-Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
 ehthumbs.db
-$RECYCLE.BIN/
-*.cab
-*.msi
-*.msm
-*.msp
+Thumbs.db
