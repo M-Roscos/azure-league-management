@@ -19,7 +19,7 @@ Poniższe zestawienie prezentuje szacowane miesięczne koszty utrzymania infrast
 
 ---
 
-## 2. Uzasadnienie Architektoniczne i Cyberbezpieczeństwo (Web Security First)
+## 2. Uzasadnienie Architektoniczne i Cyberbezpieczeństwo
 
 ### Azure App Service (Warstwa F1 - Free)
 Wykorzystano usługę App Service do hostowania aplikacji webowej, co zdejmuje z zespołu obowiązek zarządzania i zabezpieczania systemu operacyjnego (PaaS). Środowisko to zostało domyślnie skonfigurowane tak, aby wymuszać komunikację wyłącznie po protokole HTTPS (TLS 1.2 lub nowszym), co chroni dane w locie przed atakami typu Man-in-the-Middle (MitM). Dodatkowo, framework wykorzystany w aplikacji webowej został skonfigurowany do obrony przed atakami **XSS (Cross-Site Scripting)** poprzez automatyczną sanityzację danych wejściowych i wyjściowych, a także do implementacji tokenów anty-**CSRF (Cross-Site Request Forgery)** dla wszystkich formularzy zmieniających stan aplikacji.
