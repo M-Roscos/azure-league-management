@@ -1,8 +1,8 @@
 # Plan Kosztowy i Wybór Usług (Architektura Azure)
 
-Zgodnie z przyjętymi założeniami biznesowymi oraz architektonicznymi (MVP, rygorystyczny limit 100 USD dla konta studenckiego, podejście "Security First"), zaprojektowano architekturę opartą na usługach typu PaaS (Platform as a Service) oraz Serverless. Pozwala to na maksymalną redukcję kosztów operacyjnych przy jednoczesnym zachowaniu wysokich standardów bezpieczeństwa i skalowalności w przyszłości.
+Zgodnie z przyjętymi założeniami biznesowymi oraz architektonicznymi (MVP, rygorystyczny limit 100 USD dla konta studenckiego), zaprojektowano architekturę opartą na usługach typu PaaS (Platform as a Service) oraz Serverless. Pozwala to na maksymalną redukcję kosztów operacyjnych przy jednoczesnym zachowaniu wysokich standardów bezpieczeństwa i skalowalności w przyszłości.
 
-Aby zmieścić się w budżecie 100 USD (który w przypadku kont studenckich zazwyczaj musi wystarczyć na cały rok), architekturę oparto w głównej mierze na bezpłatnych wariantach usług (Free Tier) oraz zasobach o przewidywalnym, minimalnym koszcie miesięcznym.
+Aby zmieścić się w budżecie 100 USD, architekturę oparto w głównej mierze na bezpłatnych wariantach usług (Free Tier) oraz zasobach o przewidywalnym, minimalnym koszcie miesięcznym.
 
 ## 1. Tabela Kosztów (Szacunek Miesięczny)
 
@@ -28,7 +28,7 @@ Wybrano usługę App Service ze względu na pełne zarządzanie środowiskiem ur
 Logika biznesowa systemu – opierająca się na relacjach pomiędzy zawodnikami, drużynami i rozegranymi meczami (wyliczanie sumy punktów, bramek, analiza skuteczności przeciwko konkretnym przeciwnikom) – naturalnie predysponuje system do użycia relacyjnej bazy danych. Azure SQL Database zapewnia wbudowane mechanizmy bezpieczeństwa (szyfrowanie w spoczynku - TDE, firewall na poziomie serwera). Warstwa Basic oferuje stały, przewidywalny koszt poniżej 5 USD miesięcznie, gwarantując jednocześnie wystarczającą wydajność dla celów projektowych.
 
 ### Azure Key Vault (Warstwa Standard)
-Zgodnie z wymaganiem "Security First", w kodzie źródłowym nie mogą znajdować się żadne poświadczenia. Zaprojektowano wykorzystanie Azure Key Vault jako centralnego magazynu certyfikatów i haseł (np. *SQL Connection String*). Aplikacja w Azure App Service uwierzytelnia się w Key Vault za pomocą Managed Identity (Zarządzanej Tożsamości), co całkowicie eliminuje potrzebę ręcznego zarządzania poświadczeniami. Koszt usługi to zaledwie ułamki centów za 10 000 operacji kryptograficznych.
+Ponieważ w kodzie źródłowym nie mogą znajdować się żadne poświadczenia, zaprojektowano wykorzystanie Azure Key Vault jako centralnego magazynu certyfikatów i haseł (np. *SQL Connection String*). Aplikacja w Azure App Service uwierzytelnia się w Key Vault za pomocą Managed Identity (Zarządzanej Tożsamości), co całkowicie eliminuje potrzebę ręcznego zarządzania poświadczeniami. Koszt usługi to zaledwie ułamki centów za 10 000 operacji kryptograficznych.
 
 ### Microsoft Entra ID (dawniej Azure AD)
 Wykorzystano darmową warstwę usługi zarządzania tożsamością w celu implementacji autoryzacji opartej na rolach (RBAC). Pozwala to na bezpieczne odseparowanie uprawnień administratorów (dodawanie wyników meczów) od użytkowników standardowych (przeglądanie statystyk najlepszych drużyn i zawodników).
