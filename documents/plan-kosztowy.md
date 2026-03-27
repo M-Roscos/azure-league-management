@@ -1,37 +1,34 @@
-# Plan Kosztowy i Wybór Usług (Architektura Azure)
+# Plan Kosztowy i Wybór Usług (Architektura Webowa i Bezpieczeństwo)
 
-Zgodnie z przyjętymi założeniami biznesowymi oraz architektonicznymi (MVP, rygorystyczny limit 100 USD dla konta studenckiego), zaprojektowano architekturę opartą na usługach typu PaaS (Platform as a Service) oraz Serverless. Pozwala to na maksymalną redukcję kosztów operacyjnych przy jednoczesnym zachowaniu wysokich standardów bezpieczeństwa i skalowalności w przyszłości.
+Zgodnie z wymaganiami biznesowymi, ograniczeniami budżetowymi (limit 100 USD w ramach konta studenckiego), zaprojektowano architekturę opartą na usługach typu PaaS (Platform as a Service) w chmurze Microsoft Azure. Wybrane rozwiązanie minimalizuje koszty operacyjne, jednocześnie dostarczając wbudowane mechanizmy ochrony na poziomie sieci, aplikacji oraz danych (zgodnie z wytycznymi OWASP).
 
-Aby zmieścić się w budżecie 100 USD, architekturę oparto w głównej mierze na bezpłatnych wariantach usług (Free Tier) oraz zasobach o przewidywalnym, minimalnym koszcie miesięcznym.
+Poniższe zestawienie prezentuje szacowane miesięczne koszty utrzymania infrastruktury, pozwalające na bezpieczne działanie aplikacji przez cały rok w ramach przydzielonych środków.
 
 ## 1. Tabela Kosztów (Szacunek Miesięczny)
 
-| Kategoria | Usługa Azure | Wybrana Warstwa (Tier) | Szacowany Koszt Miesięczny (USD) | Główne Zadanie w Systemie |
+| Kategoria | Usługa Azure | Wybrana Warstwa (Tier) | Szacowany Koszt Miesięczny (USD) | Główne Zadanie w Systemie i Aspekty Bezpieczeństwa |
 | :--- | :--- | :--- | :--- | :--- |
-| **Aplikacja (Compute)** | Azure App Service | F1 (Free) | $0.00 | Hosting aplikacji backendowej (API) oraz ewentualnego interfejsu webowego (SPA). |
-| **Baza Danych** | Azure SQL Database | Basic (5 DTU, 2GB) | ~$4.90 | Relacyjna baza danych przechowująca informacje o drużynach, zawodnikach i statystykach. |
-| **Bezpieczeństwo** | Azure Key Vault | Standard | ~$0.10 | Bezpieczne przechowywanie sekretów, ciągów połączeń (connection strings) oraz kluczy API. |
-| **Tożsamość** | Microsoft Entra ID | Free | $0.00 | Zarządzanie tożsamością, uwierzytelnianie i autoryzacja użytkowników/administratorów. |
-| **Monitorowanie** | Azure Application Insights | Pay-As-You-Go | $0.00* | Zbieranie logów, monitorowanie wydajności aplikacji i wykrywanie anomalii. |
-| **Całkowity koszt** | | | **~$5.00 / miesiąc** | **Zapas budżetu do końca roku: ~$40.00** |
+| **Hosting Webowy (Compute)** | Azure App Service | F1 (Free) | $0.00 | Hosting aplikacji webowej. Zapewnia izolację środowiska, automatyczne łatki OS oraz wymuszenie szyfrowania w locie (HTTPS/TLS 1.2+). |
+| **Baza Danych** | Azure SQL Database | Basic (5 DTU, 2GB) | ~$4.90 | Przechowywanie danych ligowych i statystyk. Wymuszone szyfrowanie w spoczynku (TDE) oraz ochrona zaporą sieciową (Firewall). |
+| **Zarządzanie Sekretami** | Azure Key Vault | Standard | ~$0.10 | Bezpieczny magazyn kluczy API, certyfikatów i ciągów połączeń (connection strings), chroniący przed ich wyciekiem w kodzie źródłowym. |
+| **Zarządzanie Tożsamością** | Microsoft Entra ID | Free | $0.00 | Realizacja uwierzytelniania i autoryzacji (RBAC) dla paneli administracyjnych, zabezpieczająca przed nieuprawnionym dostępem. |
+| **Monitorowanie i Audyt** | Azure Application Insights | Pay-As-You-Go | $0.00* | Agregacja logów bezpieczeństwa, wykrywanie anomalii w ruchu webowym oraz monitorowanie wydajności aplikacji. |
+| **Całkowity koszt** | | | **~$5.00 / miesiąc** | **Zapas budżetu (rocznie): ~$40.00 (z limitu 100 USD)** |
 
-*\* Koszt wynosi 0 USD pod warunkiem nieprzekroczenia darmowego limitu logów (5 GB/miesiąc), co w fazie MVP jest wysoce prawdopodobne.*
+*\* Koszt wynosi 0 USD pod warunkiem nieprzekroczenia darmowego limitu logów (5 GB/miesiąc), co w fazie MVP jest gwarantowane.*
 
 ---
 
-## 2. Uzasadnienie Wyboru Usług Chmurowych
+## 2. Uzasadnienie Architektoniczne i Cyberbezpieczeństwo (Web Security First)
 
-### Azure App Service (Warstwa F1)
-Wybrano usługę App Service ze względu na pełne zarządzanie środowiskiem uruchomieniowym (PaaS). Odciąża to zespół z zadań administracyjnych związanych z systemem operacyjnym. Warstwa darmowa (F1) udostępnia wystarczające zasoby (m.in. 1 GB RAM, 60 minut współdzielonego czasu obliczeniowego dziennie) do obsługi wczesnej fazy MVP, testów i demonstracji działania logiki biznesowej dla systemu "Liga".
+### Azure App Service (Warstwa F1 - Free)
+Wykorzystano usługę App Service do hostowania aplikacji webowej, co zdejmuje z zespołu obowiązek zarządzania i zabezpieczania systemu operacyjnego (PaaS). Środowisko to zostało domyślnie skonfigurowane tak, aby wymuszać komunikację wyłącznie po protokole HTTPS (TLS 1.2 lub nowszym), co chroni dane w locie przed atakami typu Man-in-the-Middle (MitM). Dodatkowo, framework wykorzystany w aplikacji webowej został skonfigurowany do obrony przed atakami **XSS (Cross-Site Scripting)** poprzez automatyczną sanityzację danych wejściowych i wyjściowych, a także do implementacji tokenów anty-**CSRF (Cross-Site Request Forgery)** dla wszystkich formularzy zmieniających stan aplikacji.
 
-### Azure SQL Database (Warstwa Basic / 5 DTU)
-Logika biznesowa systemu – opierająca się na relacjach pomiędzy zawodnikami, drużynami i rozegranymi meczami (wyliczanie sumy punktów, bramek, analiza skuteczności przeciwko konkretnym przeciwnikom) – naturalnie predysponuje system do użycia relacyjnej bazy danych. Azure SQL Database zapewnia wbudowane mechanizmy bezpieczeństwa (szyfrowanie w spoczynku - TDE, firewall na poziomie serwera). Warstwa Basic oferuje stały, przewidywalny koszt poniżej 5 USD miesięcznie, gwarantując jednocześnie wystarczającą wydajność dla celów projektowych.
+### Azure SQL Database (Warstwa Basic)
+Relacyjna baza danych jest optymalnym wyborem dla logiki systemu "Liga", wymagającej wykonywania złożonych zapytań agregujących (np. wyliczanie zawodnika, który strzelił najwięcej bramek przeciwko konkretnej drużynie). Warstwa Basic oferuje przewidywalny, stały koszt. W kontekście bezpieczeństwa wdrożono mechanizm **TDE (Transparent Data Encryption)**, który automatycznie szyfruje bazę danych, kopie zapasowe oraz logi transakcyjne w spoczynku. Co najważniejsze, zaimplementowano warstwę dostępu do danych opartą na nowoczesnym rozwiązaniu ORM (Object-Relational Mapping), co zapewnia pełną parametryzację zapytań i całkowicie eliminuje ryzyko ataków **SQL Injection**.
 
-### Azure Key Vault (Warstwa Standard)
-Ponieważ w kodzie źródłowym nie mogą znajdować się żadne poświadczenia, zaprojektowano wykorzystanie Azure Key Vault jako centralnego magazynu certyfikatów i haseł (np. *SQL Connection String*). Aplikacja w Azure App Service uwierzytelnia się w Key Vault za pomocą Managed Identity (Zarządzanej Tożsamości), co całkowicie eliminuje potrzebę ręcznego zarządzania poświadczeniami. Koszt usługi to zaledwie ułamki centów za 10 000 operacji kryptograficznych.
+### Azure Key Vault (Warstwa Standard) i Konfiguracja
+Zgodnie z najlepszymi praktykami bezpieczeństwa, w kodzie aplikacji nie umieszczono żadnych jawnych danych uwierzytelniających. Zastosowano usługę Azure Key Vault jako scentralizowany magazyn sekretów. Aplikacja webowa zyskała dostęp do tych sekretów za pomocą mechanizmu **Managed Identity** (Zarządzanej Tożsamości) w chmurze Microsoft Entra ID. Zapewnia to bezpieczny proces pobierania konfiguracji w czasie uruchamiania aplikacji, bez konieczności zarządzania dodatkowymi hasłami dostępowymi.
 
-### Microsoft Entra ID (dawniej Azure AD)
-Wykorzystano darmową warstwę usługi zarządzania tożsamością w celu implementacji autoryzacji opartej na rolach (RBAC). Pozwala to na bezpieczne odseparowanie uprawnień administratorów (dodawanie wyników meczów) od użytkowników standardowych (przeglądanie statystyk najlepszych drużyn i zawodników).
-
-### Azure Application Insights
-Zintegrowano usługę monitoringu w celu śledzenia żądań HTTP, powolnych zapytań do bazy danych (co jest kluczowe przy wyliczaniu skomplikowanych statystyk zawodników) oraz ewentualnych wyjątków aplikacyjnych. Bezpieczeństwo jest wspierane poprzez alerty reagujące na nietypowy ruch lub błędy autoryzacji.
+### Monitorowanie i Identyfikacja Zagrożeń (Application Insights)
+Zintegrowano usługę telemetryczną w celu monitorowania nie tylko wydajności, ale również bezpieczeństwa. System rejestruje wszystkie próby nieautoryzowanego dostępu, błędy aplikacji (które mogłyby ujawnić wrażliwe dane o strukturze bazy) oraz podejrzane wzorce ruchu webowego.
