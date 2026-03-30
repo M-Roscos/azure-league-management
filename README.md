@@ -9,7 +9,7 @@ System "Liga" to nowoczesna, bezpieczna aplikacja webowa przeznaczona do komplek
 ## 📖 Spis Treści
 - [Logika Biznesowa](#-logika-biznesowa)
 - [Architektura Chmurowa](#-architektura-chmurowa)
-- [Cyberbezpieczeństwo (Security First)](#-cyberbezpieczeństwo-security-first)
+- [Cyberbezpieczeństwo](#-cyberbezpieczeństwo-security-first)
 
 ---
 
